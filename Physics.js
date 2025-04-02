@@ -3,6 +3,7 @@ import Constants from "./constants";
 
 const maxDeltaTime = 16;
 let hasScored = false;
+let highScore = 0;
 
 const Physics = (entities, { time, touches, dispatch, events }) => {
     let engine = entities.physics.engine;
@@ -12,12 +13,17 @@ const Physics = (entities, { time, touches, dispatch, events }) => {
     let player = entities.Player;
     let platform = entities.Platform;
     let myScore = entities.ScoreBoard;
-    
+    let myHighScore = entities.HighScore;
+
+    if (myScore.score > myHighScore.score) {
+        myHighScore.score = myScore.score;
+    }
+
     let movementStarted = false;
     engine.world.gravity.y = 1;
     engine.timing.timeScale = 1;
 
-    //reset rigid body position when game restarts
+    //restart game
     if (events.some(event => event.type === "game_restart")) {
         myScore.score = 0;
         Matter.Body.setVelocity(player.body, {
@@ -47,6 +53,9 @@ const Physics = (entities, { time, touches, dispatch, events }) => {
                 Matter.Body.setPosition(entity.body, blockPositions[entity.body.label]);
             }
         });
+
+        player.body.events["player-respawn"]();
+        player.body.collisionFilter.mask = 0x0002 | 0x0003;
     };
 
     //wrap player around screen
@@ -181,7 +190,7 @@ const Physics = (entities, { time, touches, dispatch, events }) => {
         myScore.score += 1;
     };
 
-    if(player.body.position.y > 350 && hasScored) {
+    if (player.body.position.y > 350 && hasScored) {
         hasScored = false;
     };
 
@@ -220,13 +229,23 @@ const Physics = (entities, { time, touches, dispatch, events }) => {
     //collision detection between player, blocks and fire
     Matter.Events.on(engine, "collisionStart", (event) => {
         event.pairs.forEach(({ bodyA, bodyB }) => {
-            if ((bodyA.label === "Player" && bodyB.label === "Block1" || bodyA.label === "Block1" && bodyB.label === "Player")) {
-
-            }
 
             if ((bodyA.label === "Player" && bodyB.label === "Wall" || bodyA.label === "Wall" && bodyB.label === "Player")) {
                 movementStarted = false;
                 dispatch({ type: "game_over" });
+
+                if (player.body) {
+                    if (player.body.events["player-died"]) {
+                        player.body.events["player-died"]();
+                    }
+                }
+
+                Matter.Body.setVelocity(player.body, { x: 0, y: -5 });
+                player.body.collisionFilter.mask = 0;
+                setTimeout(() => {
+                    Matter.Body.setVelocity(player.body, { x: 0, y: 5 });
+                }, 500);
+
             }
         });
     });

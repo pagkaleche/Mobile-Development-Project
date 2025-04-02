@@ -28,6 +28,7 @@ const CreatePlayer = (props) => {
 
     const prevXRef = useRef(body.position.x);
     const lastUpdateRef = useRef(Date.now());
+    const [isDead, setIsDead] = useState(false);
 
     useEffect(() => {
         let frameTimer;
@@ -36,6 +37,8 @@ const CreatePlayer = (props) => {
         const updateFrame = () => {
             const deltaX = body.position.x - prevXRef.current;
             const now = Date.now();
+
+            if (isDead) return;
 
             if (Math.abs(deltaX) > 1) {
                 setIsMoving(true);
@@ -57,13 +60,29 @@ const CreatePlayer = (props) => {
         frameTimer = requestAnimationFrame(updateFrame);
 
         return () => cancelAnimationFrame(frameTimer);
-    }, [body.position.x]);
+    }, [body.position.x, isDead]);
+
+    useEffect(() => {
+        if (!body.events) return;
+
+        const handleDeath = () => setIsDead(true);
+        body.events["player-died"] = handleDeath;
+
+        const handleRespawn = () => setIsDead(false);
+        body.events["player-respawn"] = handleRespawn;
+
+        return () => {
+            delete body.events["player-died"];
+            delete body.events["player-respawn"];
+        };
+    }, [body]);
 
     const x = body.position.x - size.width / 2;
     const y = body.position.y - size.height / 2;
 
     const selectedFrames = direction === "right" ? WALK_RIGHT : WALK_LEFT;
-    const imageSource = isMoving ? selectedFrames[frameIndex] : selectedFrames[0];
+    const imageSource = isDead ? DEAD[0] : isMoving ? selectedFrames[frameIndex] : selectedFrames[0];
+
 
     return (
         <ExpoImage
@@ -73,7 +92,7 @@ const CreatePlayer = (props) => {
                 top: y,
                 width: size.width,
                 height: size.height,
-                contentFit: "cover",
+                contentFit: "contain",
             }}
             source={imageSource}
         />
@@ -114,13 +133,15 @@ export default (world, pos, size, options = {}) => {
         score += points;
     };
 
+    Square1.events = {};
+
     return {
         body: Square1,
         pos,
         size,
         score,
         updateScore,
-        renderer: <CreatePlayer body={Square1} size={size} events={events} />,
+        renderer: <CreatePlayer body={Square1} size={size} />,
     };
 };
 

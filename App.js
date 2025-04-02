@@ -16,7 +16,6 @@ export default function App() {
   const [gameEvent, setGameEvent] = useState(null);
   const gameEngineRef = useRef(null);
 
-
   useEffect(() => {
     SplashScreen.preventAutoHideAsync();
     setTimeout(() => {
@@ -26,6 +25,7 @@ export default function App() {
 
   const startGame = () => {
     setGameRunning(true);
+    setScore(0);
     gameEngineRef.current.dispatch({ type: "game_start" });
   };
 
@@ -38,7 +38,7 @@ export default function App() {
   const handleEvent = useCallback((e) => {
     if (e.type === "game_over") {
       setGameOver(true);
-      setGameRunning(false);
+      // setGameRunning(false);
     } else if (e.type === "game_start") {
       setGameOver(false);
       setGameRunning(true);

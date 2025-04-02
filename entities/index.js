@@ -26,13 +26,18 @@ export default () => {
     const ButtonRight = Button(world, "orange", { x: Constants.WINDOW_WIDTH / 2 + 150, y: Constants.WINDOW_HEIGHT - 50 }, { width: 80, height: 70 }, "right", () => MoveObject("right", Player));
     const JumpButton = Button(world, "red", { x: Constants.WINDOW_WIDTH / 2, y: Constants.WINDOW_HEIGHT - 50 }, { width: 130, height: 65 }, "jump", () => MoveObject("jump", Player));
     const Player = CreatePlayer(world, { x: Constants.WINDOW_WIDTH / 2, y: Constants.WINDOW_HEIGHT / 2 + 150 }, { width: 28, height: 48, label: "Player" });
-    const ScoreBoard = Score(world, "white", { x: Constants.WINDOW_WIDTH / 2 + 20, y: 100 }, { width: 100, height: 100, fontSize: 70 }, "Score", 0);
+    const ScoreBoard = Score(world, "white", { x: Constants.WINDOW_WIDTH / 2, y: 130 }, { width: 100, height: 100, fontSize: 40 }, "Score", 0);
+    const HighScore = Score(world, "orange", { x: Constants.WINDOW_WIDTH / 2, y: 800 }, { width: 100, height: 100, fontSize: 20 }, "HighScore", 0);
 
     return {
         physics: { engine, world },
         BackGround: BackGround,
         ScoreBoard: {
             ...ScoreBoard,
+            score: 0,
+        },
+        HighScore: {
+            ...HighScore,
             score: 0,
         },
         IceBlock1: IceBlock1,

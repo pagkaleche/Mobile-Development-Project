@@ -2,9 +2,10 @@ import Matter from "matter-js";
 import { Text } from 'react-native';
 
 const Score = (props) => {
-    const { body, size, color, score } = props;
+    const { body, size, color, score, label } = props;
     const x = body.position.x - size.width / 2;
     const y = body.position.y - size.height / 2;
+
 
     return (
         <Text
@@ -17,7 +18,7 @@ const Score = (props) => {
                 fontWeight: "bold",
             }}
         >
-          {score}
+          {label && `${label}: `}{score}
         </Text>
     );
 };
@@ -38,5 +39,5 @@ export default (world, color, pos, size, label, score) => {
     );
     Matter.World.add(world, myScore);
 
-    return { body: myScore, size, color, renderer: <Score score={score} size={size} color={color} /> };
+    return { body: myScore, size, color, label, renderer: <Score score={score} size={size} color={color} /> };
 }
