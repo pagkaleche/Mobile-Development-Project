@@ -2,10 +2,10 @@ import { registerRootComponent } from "expo";
 import { GameEngine } from "react-native-game-engine";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import entities from "./entities";
-import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import Physics from "./Physics";
+import SplashScreen from "./components/Splash";
 
 registerRootComponent(App);
 
@@ -15,12 +15,15 @@ export default function App() {
   const [gameOver, setGameOver] = useState(false);
   const [gameEvent, setGameEvent] = useState(null);
   const gameEngineRef = useRef(null);
+  const [splashScreenVisible, setSplashScreenVisible] = useState(true);
+
+  // const hideSplashScreen = () => {
+  //   setSplashScreenVisible(false);
+  // };
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync();
-    setTimeout(() => {
-      SplashScreen.hideAsync();
-    }, 2000);
+    const timer = setTimeout(() => setSplashScreenVisible(false), 3000);
+    return () => clearTimeout(timer);
   }, []);
 
   const startGame = () => {
@@ -38,7 +41,6 @@ export default function App() {
   const handleEvent = useCallback((e) => {
     if (e.type === "game_over") {
       setGameOver(true);
-      // setGameRunning(false);
     } else if (e.type === "game_start") {
       setGameOver(false);
       setGameRunning(true);
@@ -55,27 +57,34 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <GameEngine
-        ref={gameEngineRef}
-        systems={[Physics]}
-        entities={gameEntities}
-        running={gameRunning}
-        onEvent={handleEvent}
-        setGameOver={setGameOver}
-      >
-        <StatusBar style="auto" />
-      </GameEngine>
-      {!gameRunning && !gameOver && (
-        <TouchableOpacity style={styles.startGame} onPress={startGame}>
-          <Text style={styles.startGameText}>Start Game</Text>
-        </TouchableOpacity>
-      )}
-      {gameOver && (
+      {splashScreenVisible ? (
+        <SplashScreen onHide={() => setSplashScreenVisible(false)} />
+      ) : (
         <>
-          <Text style={styles.gameOverText}>Roasted Cat!</Text>
-          <TouchableOpacity style={styles.gameOver} onPress={restartGame}>
-            <Text style={styles.restartText}>Restart</Text>
-          </TouchableOpacity>
+          <GameEngine
+            ref={gameEngineRef}
+            systems={[Physics]}
+            entities={gameEntities}
+            running={gameRunning}
+            onEvent={handleEvent}
+          >
+            <StatusBar style="auto" />
+          </GameEngine>
+
+          {!gameRunning && !gameOver && (
+            <TouchableOpacity style={styles.startGame} onPress={startGame}>
+              <Text style={styles.startGameText}>Start Game</Text>
+            </TouchableOpacity>
+          )}
+
+          {gameOver && (
+            <>
+              <Text style={styles.gameOverText}>Roasted Cat!</Text>
+              <TouchableOpacity style={styles.gameOver} onPress={restartGame}>
+                <Text style={styles.restartText}>Restart</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </>
       )}
     </View>
