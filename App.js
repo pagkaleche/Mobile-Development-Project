@@ -17,12 +17,11 @@ export default function App() {
   const gameEngineRef = useRef(null);
   const [splashScreenVisible, setSplashScreenVisible] = useState(true);
 
-  // const hideSplashScreen = () => {
-  //   setSplashScreenVisible(false);
-  // };
-
   useEffect(() => {
-    const timer = setTimeout(() => setSplashScreenVisible(false), 3000);
+    const timer = setTimeout(() => {
+      setSplashScreenVisible(false);
+    }, 7000);
+
     return () => clearTimeout(timer);
   }, []);
 

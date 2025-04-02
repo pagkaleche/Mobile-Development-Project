@@ -19,26 +19,26 @@ const SplashScreen = ({ onHide }) => {
             Animated.parallel([
                 Animated.timing(fadeAnim, {
                     toValue: 1,
-                    duration: 1200,
+                    duration: 3200,
                     useNativeDriver: true,
                 }),
                 Animated.timing(scaleAnim, {
                     toValue: 1,
-                    duration: 1200,
+                    duration: 4200,
                     easing: Easing.out(Easing.ease),
                     useNativeDriver: true,
                 }),
             ]),
-            Animated.delay(1500),
+            Animated.delay(3000),
             Animated.parallel([
                 Animated.timing(fadeAnim, {
                     toValue: 0,
-                    duration: 800,
+                    duration: 1800,
                     useNativeDriver: true,
                 }),
                 Animated.timing(scaleAnim, {
                     toValue: 1.2,
-                    duration: 800,
+                    duration: 1800,
                     useNativeDriver: true,
                 }),
             ]),
@@ -63,7 +63,9 @@ const SplashScreen = ({ onHide }) => {
             <Animated.View
                 style={[styles.textContainer, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}
             >
-                <Text style={styles.text}>The Annoying Ninja Cat</Text>
+                <Text style={styles.title}>The Annoying Ninja Cat</Text>
+                <Text style={styles.creator}>By: Adrian Landia</Text>
+                <Text style={styles.instructions}>Instructions: Just keep going up!</Text>
             </Animated.View>
         </LinearGradient>
     );
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+        // alignItems: "center",
     },
     textContainer: {
         paddingHorizontal: 40,
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
         shadowRadius: 15,
         elevation: 5,
     },
-    text: {
+    title: {
         fontSize: 38,
         fontWeight: "normal",
         color: "#ffffff",
@@ -98,7 +100,34 @@ const styles = StyleSheet.create({
         textShadowColor: "#000",
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 8,
+        marginBottom: 30,
+        paddingTop: 20,
     },
+
+    instructions: {
+        fontSize: 16,
+        fontWeight: "normal",
+        color: "#ffffff",
+        letterSpacing: 1.5,
+        textAlign: "center",
+        fontFamily: "PressStart2P_400Regular",
+        textShadowColor: "#000",
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 8,
+    },
+    creator: {
+        fontSize: 24,
+        fontWeight: "normal",
+        color: "#ffffff",
+        letterSpacing: 1.5,
+        textAlign: "center",
+        fontFamily: "PressStart2P_400Regular",
+        textShadowColor: "#000",
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 8,
+        marginBottom: 30,
+    },
+
     loadingContainer: {
         flex: 1,
         justifyContent: "center",
