@@ -27,7 +27,6 @@ export default function App() {
 
   const startGame = () => {
     setGameRunning(true);
-    setScore(0);
     gameEngineRef.current.dispatch({ type: "game_start" });
   };
 
