@@ -18,3 +18,4 @@ How to Play
 Climb up and don't stop! Get as many score as you can while climbing wihtout falling into the flames.
 
 
+![Game Demo](./demo.gif)
